@@ -22,10 +22,11 @@ local config = {}
 
 local mt = {}
 setmetatable(config, mt)
-mt.__call = function(table,l,w,z,comeback)
+mt.__call = function(table,l,w,h,comeback)
   config.l = tonumber(l)
   config.w = tonumber(w)
-  config.z = math.ceil(tonumber(z) / 2)
+  config.h = tonumber(h)
+  config.z = math.ceil(config.h / 2)
   config.comeback = comeback or 'false'
   config.halfw = math.floor(config.w/2)
   return config

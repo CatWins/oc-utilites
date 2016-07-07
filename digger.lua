@@ -19,9 +19,9 @@ print("")
 print("[INFO] Копаю комнату с параметрами:")
 print("[INFO]   Длина: "..cfg.l)
 print("[INFO]   Ширина: "..cfg.w)
-print("[INFO]   Глубина: "..cfg.z)
+print("[INFO]   Глубина: "..cfg.h)
 
-for z = 1, cfg.z do
+for z = 1, cfg.h do
   if z ~= 1 then
     if nav.d == 0 then
       nav.turnAround()
