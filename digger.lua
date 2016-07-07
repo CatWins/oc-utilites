@@ -9,7 +9,7 @@ local color = require('lib/color')
 local fuel = require('lib/fuel')
 local util = require('lib/utility')
 
-if type(a[1]) == nil  or type(a[2]) == nil or type(a[3]) then
+if a[1] == nil  or a[2] == nil or a[3] == nil then
   print("Синтаксис: digger <length> <width> <depth>")
   return
 end
@@ -25,7 +25,7 @@ for z = 1, cfg.z do
   if z ~= 1 then
     if nav.d == 2 then
       nav.turnAround()
-      for y = 1, cfg.l
+      for y = 1, cfg.l do
         mine.forward()
       end
     end

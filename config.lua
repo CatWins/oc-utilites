@@ -25,10 +25,10 @@ setmetatable(config, mt)
 mt.__call = function(table,l,w,z,comeback)
   config.l = tonumber(l)
   config.w = tonumber(w)
-  config.z = math.ceil(tonumber(z) / 2) 
+  config.z = math.ceil(tonumber(z) / 2)
   config.comeback = comeback or 'false'
   config.halfw = math.floor(config.w/2)
-
+  return config
 end
 
 return config
