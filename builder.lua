@@ -1,6 +1,7 @@
 --     Room digger by Tusk      --
 
 local a = {...}
+local side = require('sides')
 local cfg = require('config')
 local nav = require('lib/navigation')
 local tool = require('lib/tool')
@@ -8,6 +9,7 @@ local mine = require('lib/mine')
 local color = require('lib/color')
 local fuel = require('lib/fuel')
 local util = require('lib/utility')
+local log = require('lib/log')
 local ic = util.tryToLoad("inventory_controller")
 
 if ic == nil then
@@ -36,7 +38,7 @@ function analyze_size(bp)
   for i = 2, height do
     local t_length = tablelength(bp[i])
     if length ~= t_length then
-      print("[ERROR] В вашем чертеже ошибка: слои разных размеров. z = "..i)
+      log.error("В вашем чертеже ошибка: слои разных размеров. z = "..i)
       return false
     end
   end
@@ -44,10 +46,20 @@ function analyze_size(bp)
     for j = 1, length do
       local t_width = tablelength(bp[i][j])
       if width ~= t_width then
-        print("[ERROR] В вашем чертеже ошибка: ряды разных размеров. z = "..i.."   y = "..j)
+        log.error("В вашем чертеже ошибка: ряды разных размеров. z = "..i.."   y = "..j)
         return false
       end
     end
+  end
+  return true
+end
+
+function materialIsEqual(material, slot)
+  if material == nil then return false end
+  stack = ic.getStackInInternalSlot(slot)
+  if stack == nil then return false end
+  for id in pairs(material) do
+    if material[id] ~= stack[id] then return false end
   end
   return true
 end
@@ -56,10 +68,12 @@ function analyze_materials(bp)
   for z = 1, height do
     for y = 1, length do
       for x = 1, width do
-        if materials[bp[z][y][x]] == nil then
-          materials[bp[z][y][x]] = 1
-        else
-          materials[bp[z][y][x]] = materials[bp[z][y][x]] + 1
+        if bp.blocks[z][y][x] ~= nil then
+          if materials[bp.blocks[z][y][x]] == nil then
+            materials[bp.blocks[z][y][x]] = 1
+          else
+            materials[bp.blocks[z][y][x]] = materials[bp.blocks[z][y][x]] + 1
+          end
         end
       end
     end
@@ -68,83 +82,155 @@ end
 
 function check_materials()
   for i = 1, cfg.INV_SIZE do
-    local stack = ic.getStackInInternalSlot(i)
-    for name, amount in pairs(materials) do
-      if name == stack.name then  -- Вот тут я хз какой параметр чекать
-        materials[name] = materials[name] - stack.amount -- Тож хз
+    for material, amount in pairs(materials) do
+      if materialIsEqual(material, i) and material ~= nil then
+        materials[name] = materials[name] - ic.getStackInInternalSlot(i).size -- Тож хз
       end
     end
   end
-  for name, amount in pairs(materials) do
-    if amount > 0 then return false end
+  for material, amount in pairs(materials) do
+    if amount > 0 and material ~= nil then return false end
   end
   return true
 end
 
-print("[INFO] BUILDER BY TUSK")
-print("")
-local bp = require(fname)
-print("[INFO] Файл "..fname.." подключен")
-print("[INFO] Изучаю чертежи ...")
-if analyze_size(bp) then
-  print("[INFO] Размеры строения:")
-  print("[INFO]   Длина: "..length)
-  print("[INFO]   Ширина: "..width)
-  print("[INFO]   Высота: "..height)
-else
-  print("[ERROR] Аварийный выход: разные размеры в чертеже")
-  return false
-end
-print("[INFO] Произвожу расчет материалов ...")
-analyze_materials(bp)
-print("[INFO] Материалы:")
-for name, amount in pairs(materials) do
-  print("[INFO] " ..name.."    ... "..amount)
-end
-print("[INFO] Проверяю всё ли на месте ...")
-if check_materials() then
-  print("[INFO] Все материалы на месте.")
-else
-  print("[ERROR] Не хватает следующих материалов:")
-  for name, amount in pairs(materials) do
-    if amount > 0 then
-      print("[ERROR]  "..name.."    ... "..amount)
-    end
-  end
-  print("[ERROR] Аварийный выход: нехватка метериалов")
-end
-print("[INFO] Строю обьект ...")
-
--- А кода то нету, этож остатки от диггера
-
-for z = 1, cfg.z do
-  if z ~= 1 then
-    if nav.d == 2 then
-      nav.turnAround()
-      for y = 1, cfg.l
-        mine.forward()
+function place_block(side, material)
+  if material == nil then return true end
+  if materialIsEqual(material, robot.select()) then
+    return robot.place(side)
+  else
+    for i = 1, cfg.INV_SIZE do
+      if materialIsEqual(material, i) then
+        robot.select(i)
+        return robot.place(side)
       end
     end
-    nav.turnAround()
-    tool.swingDown()
-    nav.down()
   end
-  for x = 1, cfg.w do
-    if x ~= 1 then
-      if x%2==1 then
+  log.error("Нужно больше "..block)
+  return false
+end
+
+function build_row(y,z,backwards)
+  for x = 1, width do
+    if mine.forward() then
+      if tool.swingDown() then
+        if backwards then
+          local placed = place_block(side.down, bp.blocks[z,y,width - x + 1])
+        else
+          local placed = place_block(side.down, bp.blocks[z,y,x])
+        end
+        if not place_block(side.down, bp.blocks[z,y,x]) then
+          log.error("Блок не размещен. x = "..x.."  |  y = "..y)
+        end
+      else
+        log.error("Не могу сломать блок. x = "..x.."  |  y = "..y)
+      end
+    else
+      log.error("Не могу сломать блок. x = "..x+1.."  |  y = "..y)
+    end
+  end
+end
+
+function build_layer(z)
+  for y = 1, length do
+    if y ~= 1 then
+      if y%2==0 then
         nav.turnRight()
-        mine.forward()
+        if not mine.forward() then
+          log.error("Не могу сломать блок. x = "..width.."  |  y = "..y.."  |  z = "..z)
+        end
         nav.turnRight()
       else
         nav.turnLeft()
-        mine.forward()
+        if not mine.forward() then
+          log.error("Не могу сломать блок. x = "..1.."  |  y = "..y.."  |  z = "..z)
+        end
         nav.turnLeft()
       end
     end
-    for y = 1, cfg.l do
-      mine.forward()
+    if y%2==0 then
+      build_row(y,z,true)
+    else
+      build_row(y,z)
     end
   end
 end
 
-print("[INFO] Дело сделано.")
+-- xxx>
+-- <xxx
+-- xxx>
+-- <xxx
+
+
+function build_structure()
+  for z = 1, height do
+    if z ~= 1 do
+      if length%2==0 then
+        nav.turnRight()
+        tool.swingUp()
+        nav.up()
+        for y = 1, length do
+          mine.forward()
+        end
+        nav.turnRight()
+      else
+        nav.turnLeft()
+        tool.swingUp()
+        nav.up()
+        for y = 1, length do
+          mine.forward()
+        end
+        nav.turnLeft()
+        for x = 1, width do
+          mine.forward()
+        end
+        nav.turnAround()
+      end
+    else
+      tool.swingUp()
+      nav.up()
+      for y = 1, length do
+        mine.forward()
+      end
+      nav.turnRight()
+    end
+    build_layer(z)
+  end
+end
+
+log.info("BUILDER BY TUSK")
+print("")
+local bp = require(fname)
+log.info("Файл "..fname.." подключен")
+log.info("Изучаю чертежи ...")
+if analyze_size(bp) then
+  log.info("Размеры строения:")
+  log.info("  Длина: "..length)
+  log.info("  Ширина: "..width)
+  log.info("  Высота: "..height)
+else
+  log.error("Аварийный выход: разные размеры в чертеже")
+  return false
+end
+log.info("Произвожу расчет материалов ...")
+analyze_materials(bp)
+log.info("Материалы:")
+for name, amount in pairs(materials) do
+  log.info("" ..name.."    ... "..amount)
+end
+log.info("Проверяю всё ли на месте ...")
+if check_materials() then
+  log.info("Все материалы на месте.")
+else
+  log.error("Не хватает следующих материалов:")
+  for name, amount in pairs(materials) do
+    if amount > 0 then
+      log.error(" "..name.."    ... "..amount)
+    end
+  end
+  log.error("Аварийный выход: нехватка метериалов")
+end
+log.info("Строю обьект ...")
+build_structure()
+
+log.info("Дело сделано.")

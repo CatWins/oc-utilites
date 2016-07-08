@@ -82,7 +82,7 @@ for z=1, cfg.z do
     tool.swingDown()
     nav.down()
   end
-  for i=1, cfg.l do
+  for i=1, cfg.l - 1 do
     step(i)
   end
 end

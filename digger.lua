@@ -23,7 +23,7 @@ print("[INFO]   Глубина: "..cfg.h)
 
 for z = 1, cfg.h do
   if z ~= 1 then
-    if nav.d == 0 then
+    if nav.d == 2 then
       nav.turnAround()
       for y = 1, cfg.l do
         mine.forward()
@@ -45,7 +45,7 @@ for z = 1, cfg.h do
         nav.turnLeft()
       end
     end
-    for y = 1, cfg.l do
+    for y = 1, cfg.l - 1 do
       mine.forward()
     end
   end
