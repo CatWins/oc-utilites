@@ -25,6 +25,7 @@ end
 
 if type(a[1]) == nil then
   print("Синтаксис: builder <blueprint_filename>")
+  print("Папка для чертежей ./blueprints. Расширение - lua")
   return
 end
 
@@ -68,11 +69,11 @@ function analyze_materials(bp)
   for z = 1, height do
     for y = 1, length do
       for x = 1, width do
-        if bp.blocks[z][y][x] ~= nil then
-          if materials[bp.blocks[z][y][x]] == nil then
-            materials[bp.blocks[z][y][x]] = 1
+        if bp[z][y][x] ~= nil then
+          if materials[bp[z][y][x]] == nil then
+            materials[bp[z][y][x]] = 1
           else
-            materials[bp.blocks[z][y][x]] = materials[bp.blocks[z][y][x]] + 1
+            materials[bp[z][y][x]] = materials[bp[z][y][x]] + 1
           end
         end
       end
@@ -115,18 +116,18 @@ function build_row(y,z,backwards)
     if mine.forward() then
       if tool.swingDown() then
         if backwards then
-          local placed = place_block(side.down, bp.blocks[z,y,width - x + 1])
+          local placed = place_block(side.down, bp[z][y][width - x + 1])
         else
-          local placed = place_block(side.down, bp.blocks[z,y,x])
+          local placed = place_block(side.down, bp[z][y][x])
         end
-        if not place_block(side.down, bp.blocks[z,y,x]) then
+        if not place_block(side.down, bp[z][y][x]) then
           log.error("Блок не размещен. x = "..x.."  |  y = "..y)
         end
       else
         log.error("Не могу сломать блок. x = "..x.."  |  y = "..y)
       end
     else
-      log.error("Не могу сломать блок. x = "..x+1.."  |  y = "..y)
+      log.error("Не могу сломать блок. x = "..(x+1).."  |  y = "..y)
     end
   end
 end
@@ -143,7 +144,7 @@ function build_layer(z)
       else
         nav.turnLeft()
         if not mine.forward() then
-          log.error("Не могу сломать блок. x = "..1.."  |  y = "..y.."  |  z = "..z)
+          log.error("Не могу сломать блок. x =   |  y = "..y.."  |  z = "..z)
         end
         nav.turnLeft()
       end
@@ -164,7 +165,7 @@ end
 
 function build_structure()
   for z = 1, height do
-    if z ~= 1 do
+    if z ~= 1 then
       if length%2==0 then
         nav.turnRight()
         tool.swingUp()
@@ -200,7 +201,7 @@ end
 
 log.info("BUILDER BY TUSK")
 print("")
-local bp = require(fname)
+local bp = require("blueprints/"..fname)
 log.info("Файл "..fname.." подключен")
 log.info("Изучаю чертежи ...")
 if analyze_size(bp) then

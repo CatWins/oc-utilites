@@ -25,4 +25,4 @@ blueprint.blocks = {{
 {x,x,x},
 {x,x,x}}}
 
-return blueprint
+return blueprint.blocks
