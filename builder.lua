@@ -1,6 +1,7 @@
 --     Room digger by Tusk      --
 
 local a = {...}
+local robot = require("robot")
 local side = require('sides')
 local cfg = require('config')
 local nav = require('lib/navigation')
@@ -98,12 +99,12 @@ end
 function place_block(side, material)
   if material == "air" then return true end
   if materialIsEqual(material, robot.select()) then
-    return robot.place(side)
+    return robot.placeDown(side)
   else
     for i = 1, cfg.INV_SIZE do
       if materialIsEqual(material, i) then
         robot.select(i)
-        return robot.place(side)
+        return robot.placeDown(side)
       end
     end
   end
@@ -113,7 +114,7 @@ end
 
 function build_row(y,z,backwards)
   for x = 1, width do
-    if mine.forward() then
+    if x == 1 or mine.forward() then
       if tool.swingDown() then
         if backwards then
           local placed = place_block(side.down, bp[z][y][width - x + 1])
@@ -170,7 +171,7 @@ function build_structure()
         nav.turnRight()
         tool.swingUp()
         nav.up()
-        for y = 1, length do
+        for y = 1, length - 1 do
           mine.forward()
         end
         nav.turnRight()
@@ -178,7 +179,7 @@ function build_structure()
         nav.turnLeft()
         tool.swingUp()
         nav.up()
-        for y = 1, length do
+        for y = 1, length - 1 do
           mine.forward()
         end
         nav.turnLeft()
@@ -217,7 +218,7 @@ log.info("Произвожу расчет материалов ...")
 analyze_materials(bp)
 log.info("Материалы:")
 for name, amount in pairs(materials) do
-  log.info(name.."    ... "..amount)
+  log.info(name.label.."    ... "..amount)
 end
 log.info("Проверяю всё ли на месте ...")
 if check_materials() then
@@ -226,7 +227,7 @@ else
   log.error("Не хватает следующих материалов:")
   for name, amount in pairs(materials) do
     if amount > 0 then
-      log.error(name.."    ... "..amount)
+      log.error(name.label.."    ... "..amount)
     end
   end
   log.error("Аварийный выход: нехватка метериалов")
