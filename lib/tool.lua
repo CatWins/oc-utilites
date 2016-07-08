@@ -66,7 +66,7 @@ end
 
 function tool.swing()
   tool.replace()
-  if detect(side.front) then
+  if robot.detect(side.front) then
     if robot.swing() then
       return true
     else
@@ -81,7 +81,7 @@ end
 
 function tool.swingUp()
   tool.replace()
-  if detect(side.top) then
+  if robot.detect(side.top) then
     if robot.swingUp() then
       return true
     else
@@ -96,7 +96,7 @@ end
 
 function tool.swingDown()
   tool.replace()
-  if detect(side.bottom) then
+  if robot.detect(side.bottom) then
     if robot.swingDown() then
       return true
     else

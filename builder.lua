@@ -69,7 +69,7 @@ function analyze_materials(bp)
   for z = 1, height do
     for y = 1, length do
       for x = 1, width do
-        if bp[z][y][x] ~= nil then
+        if bp[z][y][x] ~= "air" then
           if materials[bp[z][y][x]] == nil then
             materials[bp[z][y][x]] = 1
           else

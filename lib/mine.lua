@@ -13,6 +13,7 @@ local lode = {}
 
 function mine.forward()
   while not nav.forward() do tool.swing() end
+  return true
 end
 
 function mine.isTrash(side)
