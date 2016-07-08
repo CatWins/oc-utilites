@@ -183,7 +183,7 @@ function build_structure()
           mine.forward()
         end
         nav.turnLeft()
-        for x = 1, width do
+        for x = 1, width - 1 do
           mine.forward()
         end
         nav.turnAround()
@@ -202,7 +202,7 @@ end
 
 log.info("BUILDER BY TUSK")
 print("")
-local bp = require("blueprints/"..fname)
+bp = require("blueprints/"..fname)
 log.info("Файл "..fname.." подключен")
 log.info("Изучаю чертежи ...")
 if analyze_size(bp) then
