@@ -10,7 +10,7 @@ y.label = "Mossy Stone Bricks"
 y.name = "minecraft:stonebrick"
 y.damage = 1
 
-local o = nil
+local o = "air"
 
 blueprint.blocks = {{
 {y,o,y},

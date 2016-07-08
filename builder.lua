@@ -56,7 +56,7 @@ function analyze_size(bp)
 end
 
 function materialIsEqual(material, slot)
-  if material == nil then return false end
+  if material == "air" then return false end
   stack = ic.getStackInInternalSlot(slot)
   if stack == nil then return false end
   for id in pairs(material) do
@@ -84,19 +84,19 @@ end
 function check_materials()
   for i = 1, cfg.INV_SIZE do
     for material, amount in pairs(materials) do
-      if materialIsEqual(material, i) and material ~= nil then
-        materials[name] = materials[name] - ic.getStackInInternalSlot(i).size -- Тож хз
+      if materialIsEqual(material, i) and material ~= "air" then
+        materials[material] = materials[material] - ic.getStackInInternalSlot(i).size -- Тож хз
       end
     end
   end
   for material, amount in pairs(materials) do
-    if amount > 0 and material ~= nil then return false end
+    if amount > 0 and material ~= "air" then return false end
   end
   return true
 end
 
 function place_block(side, material)
-  if material == nil then return true end
+  if material == "air" then return true end
   if materialIsEqual(material, robot.select()) then
     return robot.place(side)
   else
@@ -217,7 +217,7 @@ log.info("Произвожу расчет материалов ...")
 analyze_materials(bp)
 log.info("Материалы:")
 for name, amount in pairs(materials) do
-  log.info("" ..name.."    ... "..amount)
+  log.info(name.."    ... "..amount)
 end
 log.info("Проверяю всё ли на месте ...")
 if check_materials() then
@@ -226,7 +226,7 @@ else
   log.error("Не хватает следующих материалов:")
   for name, amount in pairs(materials) do
     if amount > 0 then
-      log.error(" "..name.."    ... "..amount)
+      log.error(name.."    ... "..amount)
     end
   end
   log.error("Аварийный выход: нехватка метериалов")

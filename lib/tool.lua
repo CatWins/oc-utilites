@@ -1,5 +1,5 @@
 local robot = require("robot")
-
+local side = require('sides')
 local cfg = require('config')
 local util = require("lib/utility")
 
@@ -66,33 +66,45 @@ end
 
 function tool.swing()
   tool.replace()
-  if robot.swing() then
-    return true
+  if detect(side.front) then
+    if robot.swing() then
+      return true
+    else
+      tool.swap()
+      if robot.swing() then return true end
+    end
   else
-    tool.swap()
-    if robot.swing() then return true end
+    return true
   end
   return false
 end
 
 function tool.swingUp()
   tool.replace()
-  if robot.swingUp() then
-    return true
+  if detect(side.top) then
+    if robot.swingUp() then
+      return true
+    else
+      tool.swap()
+      if robot.swingUp() then return true end
+    end
   else
-    tool.swap()
-    if robot.swingUp() then return true end
+    return true
   end
   return false
 end
 
 function tool.swingDown()
   tool.replace()
-  if robot.swingDown() then
-    return true
+  if detect(side.bottom) then
+    if robot.swingDown() then
+      return true
+    else
+      tool.swap()
+      if robot.swingDown() then return true end
+    end
   else
-    tool.swap()
-    if robot.swingDown() then return true end
+    return true
   end
   return false
 end
