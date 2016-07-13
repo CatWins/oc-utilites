@@ -17,17 +17,17 @@ end
 
 function item_control.unload()
   -- place for chest
-  while tool.swing() do end
+  if not tool.swing() then error('Не могу выкопать место для сундука.') end
   tool.swingUp()
   nav.up()
-  while tool.swing() do end
+  if not tool.swing() then error('Не могу выкопать место для сундука.') end
   nav.down()
   robot.select(cfg.chest_slot)
   if robot.place() then
     -- put items
     for i=cfg.empty_slot, cfg.INV_SIZE do
       robot.select(i)
-      while robot.drop() do end
+      if not tool.isTool() then robot.drop() end
     end
 
     -- grab ender chest
@@ -35,6 +35,8 @@ function item_control.unload()
       robot.select(cfg.chest_slot)
       tool.swing()
     end
+  else
+    error('Не могу поставить сундук.')
   end
 end
 

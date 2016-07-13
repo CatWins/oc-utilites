@@ -11,7 +11,7 @@ y.name = "chisel:stonebricksmooth"
 y.damage = 0
 
 
-local o = nil
+local o = "air"
 
 blueprint.blocks = {{
 
@@ -46,7 +46,7 @@ blueprint.blocks = {{
 {o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o}, -- 28
 {o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o}, -- 29
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}}, -- 30
-
+{
 -- 2   4   6   8   10  12  14  16  18  20  22  24  26  28  30
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}, -- 1
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 2
@@ -78,7 +78,7 @@ blueprint.blocks = {{
 {o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o}, -- 28
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 29
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}}, -- 30
-
+{
 -- 2   4   6   8   10  12  14  16  18  20  22  24  26  28  30
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}, -- 1
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 2
@@ -110,7 +110,7 @@ blueprint.blocks = {{
 {o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o}, -- 28
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 29
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}}, -- 30
-
+{
 -- 2   4   6   8   10  12  14  16  18  20  22  24  26  28  30
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}, -- 1
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 2
@@ -142,7 +142,7 @@ blueprint.blocks = {{
 {o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o}, -- 28
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 29
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}}, -- 30
-
+{
 -- 2   4   6   8   10  12  14  16  18  20  22  24  26  28  30
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}, -- 1
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 2
@@ -174,7 +174,7 @@ blueprint.blocks = {{
 {o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o}, -- 28
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 29
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}}, -- 30
-
+{
 -- 2   4   6   8   10  12  14  16  18  20  22  24  26  28  30
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}, -- 1
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 2
@@ -206,7 +206,7 @@ blueprint.blocks = {{
 {o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o}, -- 28
 {o,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,x,x,o,o,o,o,o,o,o,o,o}, -- 29
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}}, -- 30
-
+{
 -- 2   4   6   8   10  12  14  16  18  20  22  24  26  28  30
 {o,o,o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o,o,o}, -- 1
 {o,o,o,o,o,o,o,o,o,x,x,x,x,x,x,x,x,x,x,x,x,o,o,o,o,o,o,o,o,o}, -- 2
@@ -241,4 +241,4 @@ blueprint.blocks = {{
 
 }
 
-return blueprint
+return blueprint.blocks

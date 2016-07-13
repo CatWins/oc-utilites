@@ -22,7 +22,7 @@ local ic = util.tryToLoad("inventory_controller")
 
 local light_allowed = (robot.setLightColor ~= nil)
 
-if type(a[1]) == nil  or type(a[2]) == nil or type(a[3]) then
+if a[1] == nil  or a[2] == nil or a[3] == nil then
   print("Синтаксис: miner <length> <width> <depth> [comeback]")
   return
 end
@@ -51,7 +51,7 @@ end
 -- =================================== M A I N =================================== --
 print("Totoro Recursive Miner 1.5H")
 print("Hacked by Tusk")
-print("[INFO] Запуск. Длина: "..cfg.l..". Ширина: "..cfg.w..'. \n       Возврат: '..cfg.comeback)
+print("[INFO] Запуск. Длина: "..cfg.l..". Ширина: "..cfg.w..". Глубина:  "..cfg.z..". \n       Возврат: "..cfg.comeback)
 if cloader ~= nil and cfg.USE_CLOADER then
   cloader.setActive(true)
   print("[INFO] Чанклодер активирован.")

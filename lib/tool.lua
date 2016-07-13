@@ -66,45 +66,33 @@ end
 
 function tool.swing()
   tool.replace()
-  if robot.detect(side.front) then
-    if robot.swing() then
-      return true
-    else
-      tool.swap()
-      if robot.swing() then return true end
-    end
-  else
+  if robot.swing() then
     return true
+  else
+    tool.swap()
+    if robot.swing() then return true end
   end
   return false
 end
 
 function tool.swingUp()
   tool.replace()
-  if robot.detect(side.top) then
-    if robot.swingUp() then
-      return true
-    else
-      tool.swap()
-      if robot.swingUp() then return true end
-    end
-  else
+  if robot.swingUp() then
     return true
+  else
+    tool.swap()
+    if robot.swingUp() then return true end
   end
   return false
 end
 
 function tool.swingDown()
   tool.replace()
-  if robot.detect(side.bottom) then
-    if robot.swingDown() then
-      return true
-    else
-      tool.swap()
-      if robot.swingDown() then return true end
-    end
-  else
+  if robot.swingDown() then
     return true
+  else
+    tool.swap()
+    if robot.swingDown() then return true end
   end
   return false
 end

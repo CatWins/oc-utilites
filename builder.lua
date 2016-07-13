@@ -112,20 +112,26 @@ function place_block(side, material)
   return false
 end
 
+function build_block(side, material)
+  if material == "air" then return true end
+  if tool.swingDown() then
+    return place_block(side, material)
+  else
+    log.error("Не могу сломать блок. x = "..x.."  |  y = "..y)
+  end
+  return false
+end
+
 function build_row(y,z,backwards)
   for x = 1, width do
     if x == 1 or mine.forward() then
-      if tool.swingDown() then
-        if backwards then
-          local placed = place_block(side.down, bp[z][y][width - x + 1])
-        else
-          local placed = place_block(side.down, bp[z][y][x])
-        end
-        if not place_block(side.down, bp[z][y][x]) then
-          log.error("Блок не размещен. x = "..x.."  |  y = "..y)
-        end
+      if backwards then
+        local placed = build_block(side.down, bp[z][y][width - x + 1])
       else
-        log.error("Не могу сломать блок. x = "..x.."  |  y = "..y)
+        local placed = build_block(side.down, bp[z][y][x])
+      end
+      if not placed then
+        log.error("Блок не размещен. x = "..x.."  |  y = "..y)
       end
     else
       log.error("Не могу сломать блок. x = "..(x+1).."  |  y = "..y)
