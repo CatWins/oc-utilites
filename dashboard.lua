@@ -1,11 +1,13 @@
 local com = require('component')
-local glasses = com.glasses
 local gpu = com.gpu
 local event = require('event')
 
+local util = require('lib/utility')
 local bbuffer = require('lib/bbuffer')
 
-local arEnabled = true
+local glasses = util.tryToLoad(glasses)
+
+local arEnabled = false
 
 gpu.setResolution(10,1)
 
@@ -17,9 +19,9 @@ end
 
 function update()
   charge = bbuffer.getChargePercent()
-  gpu.set(1,1,'Заряд: ' .. charge .. '%')
+  gpu.set(1,1,'Заряд ' .. charge .. '%')
   if arEnabled then
-    chargeLabel.setText('Заряд: ' .. charge .. '%')
+    chargeLabel.setText('Заряд ' .. charge .. '%')
   end
 end
 
