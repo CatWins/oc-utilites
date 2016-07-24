@@ -5,7 +5,7 @@ local event = require('event')
 local util = require('lib/utility')
 local bbuffer = require('lib/bbuffer')
 
-local glasses = util.tryToLoad(glasses)
+local glasses = util.tryToLoad('glasses')
 
 local arEnabled = false
 
