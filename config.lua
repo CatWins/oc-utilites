@@ -17,8 +17,11 @@ local config = {}
   config.chest_slot = config.TECH_SLOTS
   config.empty_slot = config.TECH_SLOTS + 1
 
-  config.pickaxe = "gt.metatool.01.2.name" --label
+  config.pickaxe = "gt.metatool.01.2.name" --label, теперь name
   config.shovel = "gt.metatool.01.4.name"
+  config.shears = "Railcraft:tool.steel.shears"
+
+  config.fuel = "minecraft:coal"
 
 local mt = {}
 setmetatable(config, mt)

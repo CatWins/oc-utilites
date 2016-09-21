@@ -1,4 +1,4 @@
---     Room digger by Tusk      --
+--     Structure Builder by Tusk      --
 
 local a = {...}
 local robot = require("robot")

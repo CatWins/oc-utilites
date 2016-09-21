@@ -97,10 +97,25 @@ function tool.swingDown()
   return false
 end
 
+function tool.use()
+  tool.replace()
+  return robot.use()
+end
+
+function tool.useUp()
+  tool.replace()
+  return robot.useUp()
+end
+
+function tool.useDown()
+  tool.replace()
+  return robot.useDown()
+end
+
 function tool.isTool()
   local item = ic.getStackInInternalSlot()
   if item ~= nil then
-    if item.label == cfg.pickaxe or item.label == cfg.shovel then
+    if item.name == cfg.pickaxe or item.name == cfg.shovel or item.name == cfg.shears then
       return true
     end
   end
