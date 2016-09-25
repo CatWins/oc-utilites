@@ -10,4 +10,16 @@ function utility.tryToLoad(name)
   end
 end
 
+function utility.addToSet(set, key)
+  set[key] = true
+end
+
+function utility.removeFromSet(set, key)
+  set[key] = nil
+end
+
+function utility.setContains(set, key)
+  return set[key] ~= nil
+end
+
 return utility
