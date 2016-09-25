@@ -37,7 +37,7 @@ function tool.swap()
   else
     next = cfg.pickaxe
   end
-  return tool.equipByLabel(next)
+  return tool.equipByName(next)
 end
 
 -- REPLACE BROKEN TOOL
@@ -45,7 +45,7 @@ function tool.replace()
   if robot.durability() ~= nil then
     return
   end
-  return tool.equipByLabel(tool)
+  return tool.equipByName(tool)
 end
 
 -- EQUIP TOOL BY LABEL
@@ -57,6 +57,21 @@ function tool.equipByLabel(label)
         robot.select(i)
         ic.equip()
         tool.current = label
+        return true
+      end
+    end
+  end
+  return false
+end
+
+function tool.equipByName(name)
+  for i=cfg.empty_slot, cfg.INV_SIZE do
+    local item = ic.getStackInInternalSlot(i)
+    if item ~= nil then
+      if name == item.name then
+        robot.select(i)
+        ic.equip()
+        tool.current = name
         return true
       end
     end

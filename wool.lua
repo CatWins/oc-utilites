@@ -1,7 +1,7 @@
 local a = {...}
 local robot = require("robot")
-local side = require('sides')
-local cfg = require('config')(a[1],a[2])
+local sides = require('sides')
+local cfg = require('config')(a[1],a[2],8)
 local nav = require('lib/navigation')
 local tool = require('lib/tool')
 --local mine = require('lib/mine')
@@ -31,9 +31,11 @@ function layer()
       if y%2==0 then
         nav.turnRight()
         while not nav.forward() do end
+        while not nav.forward() do end
         nav.turnRight()
       else
         nav.turnLeft()
+        while not nav.forward() do end
         while not nav.forward() do end
         nav.turnLeft()
       end
@@ -47,11 +49,13 @@ function goHome()
     nav.turnRight()
     for y = 1, length - 1 do
       while not nav.forward() do end
+      while not nav.forward() do end
     end
     nav.turnRight()
   else
     nav.turnLeft()
     for y = 1, length - 1 do
+      while not nav.forward() do end
       while not nav.forward() do end
     end
     nav.turnLeft()
@@ -95,8 +99,9 @@ function prepare()
     end
   end
 
-  if hasSpareTool == false than
-    if ic.getStackInSlot(sides.top, 9).name == cfg.shears than
+  if hasSpareTool == false then
+    if ic.getStackInSlot(sides.top, 9).name == cfg.shears then
+      robot.select(1)
       ic.suckFromSlot(sides.top, 9)
     else
       log.error('Нет запасных ножниц в 9 слоте верхнего инвентаря')
@@ -104,8 +109,9 @@ function prepare()
     end
   end
 
-  if hasSpareFuel == false than
-    if ic.getStackInSlot(sides.top, 8).name == cfg.fuel than
+  if hasSpareFuel == false then
+    if ic.getStackInSlot(sides.top, 8).name == cfg.fuel then
+      robot.select(2)
       ic.suckFromSlot(sides.top, 8)
     else
       log.error('Нет угля в 8 слоте верхнего инвентаря')
@@ -124,4 +130,5 @@ while true do
   prepare()
   layer()
   goHome()
+  os.sleep(10)
 end
