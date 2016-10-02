@@ -1,6 +1,6 @@
 local a = {...}
 local com = require('component')
-local side = require('sides')
+local sides = require('sides')
 local util = require('lib/utility')
 local ic = util.tryToLoad("inventory_controller")
 local red = util.tryToLoad('redstone')
@@ -50,7 +50,7 @@ function init()
   battery = red.getInput(RED_ENERGY_SIDE)
 
   layoutSize = 0
-  for k,v in pairs(layout.components) do
+  for k,v in pairs(layout) do
     layoutSize = layoutSize + 1
   end
 
@@ -65,11 +65,13 @@ end
 
 function innerTempreture()  --  returns temperature of max heated component
   local temp = 100
-  for i = 1, ic.inventorySize(REACTOR_SIDE) do
+  for i = 1, ic.getInventorySize(REACTOR_SIDE) do
     local stack = ic.getStackInSlot(REACTOR_SIDE, i)
-    local d = stack.damage * 100 / stack.maxDamage
-    if stack.maxDamage > 0 and d < temp and ~util.setContains(fuelList, stack.name) then
-      temp = d
+    if stack ~= nil then
+      local d = stack.damage * 100 / stack.maxDamage
+      if stack.maxDamage > 0 and d < temp and not util.setContains(fuelList, stack.name) then
+        temp = d
+      end
     end
   end
   return temp
@@ -77,8 +79,8 @@ end
 
 function checkLayout()
   if ic.inventorySize(REACTOR_SIDE) ~= layoutSize then return false end
-  for i = 1, ic.inventorySize(REACTOR_SIDE) do
-    if ic.getStackInSlot(REACTOR_SIDE, i).name ~= layout.components[i].name then return false end
+  for i = 1, ic.getInventorySize(REACTOR_SIDE) do
+    if ic.getStackInSlot(REACTOR_SIDE, i).name ~= layout[i].name then return false end
   end
   return true
 end
@@ -102,19 +104,19 @@ function update()
 end
 
 function render()
-  gpu.setBackground(#071007)
-  gpu.setForeground(#7cd043)
+  gpu.setBackground(0x071007)
+  gpu.setForeground(0x7cd043)
 
   gpu.fill(0, 0, screenWidth, screenHeight, ' ')
 
-  gpu.set(1, 1, if red.getInput(RED_INPUT_SIDE) > 0 then 'Реактор включен' else 'Реактор выключен' end)
-  gpu.set(1, 2, if isWorking then 'Идёт реакция' else 'Охлаждение' end)
+  gpu.set(1, 1, (red.getInput(RED_INPUT_SIDE) > 0 and 'Реактор включен' or 'Реактор выключен'))
+  gpu.set(1, 2, (isWorking and 'Идёт реакция' or 'Охлаждение'))
   gpu.set(1, 3, 'Температура оболочки: ' .. t .. '/' .. tMax)
   gpu.set(1, 4, 'Температура компонентов: ' .. tInner .. '/100')
 
-  gpu.setForeground(#d0437c)
+  gpu.setForeground(0xd0437c)
   --  Ошибки
-  if ~isLayoutOk then gpu.set(1, 5, '[ОШИБКА] Несоответствие шаблону') end
+  if not isLayoutOk then gpu.set(1, 5, '[ОШИБКА] Несоответствие шаблону') end
 
 end
 
