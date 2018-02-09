@@ -38,8 +38,8 @@ local fuelList = {}  --  table which contains non-tracked components as a keys
 local fuelConfig = {'gregtech:gt.reactorUraniumQuad'}
 
 local RED_OUTPUT_SIDE = sides.bottom
-local RED_INPUT_SIDE = sides.left
-local RED_ENERGY_SIDE = sides.right
+local RED_INPUT_SIDE = sides.south
+local RED_ENERGY_SIDE = sides.north
 local REACTOR_SIDE = 3
 
 function init()
@@ -59,27 +59,28 @@ function init()
   end
 
   tInner = innerTempreture()
+  isLayoutOk = checkLayout()
 
   screenWidth, screenHeight = gpu.getResolution()
 end
 
 function innerTempreture()  --  returns temperature of max heated component
-  local temp = 100
+  local temp = 0
   for i = 1, ic.getInventorySize(REACTOR_SIDE) do
     local stack = ic.getStackInSlot(REACTOR_SIDE, i)
     if stack ~= nil then
       local d = stack.damage * 100 / stack.maxDamage
-      if stack.maxDamage > 0 and d < temp and not util.setContains(fuelList, stack.name) then
+      if stack.maxDamage > 0 and d > temp and not util.setContains(fuelList, stack.name) then
         temp = d
       end
     end
   end
-  return temp
+  return math.floor(temp)
 end
 
 function checkLayout()
-  if ic.inventorySize(REACTOR_SIDE) ~= layoutSize then return false end
-  for i = 1, ic.getInventorySize(REACTOR_SIDE) do
+  if ic.getInventorySize(REACTOR_SIDE) - 4 ~= layoutSize then return false end
+  for i = 1, ic.getInventorySize(REACTOR_SIDE) - 4 do
     if ic.getStackInSlot(REACTOR_SIDE, i).name ~= layout[i].name then return false end
   end
   return true
@@ -87,7 +88,6 @@ end
 
 function cycle()
   rest()
-  if checkLayout() then isLayoutOk = true else isLayoutOk = false end
   work()
 end
 
@@ -95,7 +95,8 @@ function update()
   t = reactor.getHeat()
   tInner = innerTempreture()
   battery = red.getInput(RED_ENERGY_SIDE)
-  if t == 0 and tInner == 100 then
+  isLayoutOk = checkLayout()
+  if t == 0 and tInner == 0 then
     isCold = true
   else
     isCold = false
@@ -107,7 +108,7 @@ function render()
   gpu.setBackground(0x071007)
   gpu.setForeground(0x7cd043)
 
-  gpu.fill(0, 0, screenWidth, screenHeight, ' ')
+  gpu.fill(0, 0, screenWidth + 1, screenHeight + 1, ' ')
 
   gpu.set(1, 1, (red.getInput(RED_INPUT_SIDE) > 0 and 'Реактор включен' or 'Реактор выключен'))
   gpu.set(1, 2, (isWorking and 'Идёт реакция' or 'Охлаждение'))
@@ -121,26 +122,33 @@ function render()
 end
 
 function work() --  добавить зависимость от батареек [DONE]
+  update()
   isWorking = true
-  while isLayoutOk and tInner >= 50 and t < tTarget and battery < 15 do
+  while isLayoutOk and tInner <= 50 and t < tTarget and battery < 15 and red.getInput(RED_INPUT_SIDE) > 0 do
     red.setOutput(RED_OUTPUT_SIDE, 255)
-    os.sleep(1)
+--    os.sleep(1)
     update()
   end
 end
 
 function rest()
+  update()
   isWorking = false
   red.setOutput(RED_OUTPUT_SIDE,0)
   while isCold == false do
-    os.sleep(1)
+--    os.sleep(1)
     update()
   end
 end
 
 -- /\/  Main Programm /\/ --
+function main()
+  init()
+  while true do
+    cycle()
+  end
+end
 
-init()
-while true do
-  cycle()
+if not pcall(main()) then
+  red.setOutput(RED_OUTPUT_SIDE, 0)
 end
